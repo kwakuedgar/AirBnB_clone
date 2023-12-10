@@ -16,16 +16,16 @@ from console import HBNBCommand
 
 
 class TestHBNBCommandDocs(unittest.TestCase):
-    """ check for documentation """
+    """check for documentation"""
     def test_class_doc(self):
         """ check for class documentation """
         self.assertTrue(len(HBNBCommand.__doc__) > 0)
 
 
 class TestHBNBCommandPep8(unittest.TestCase):
-    """ check for pep8 validation """
+    """check for pep8 validation"""
     def test_pep8(self):
-        """ test base and test_base for pep8 conformance """
+        """test base and test_base for pep8 conformance"""
         style = pep8.StyleGuide(quiet=True)
         file1 = 'console.py'
         file2 = 'tests/test_console.py'
@@ -35,5 +35,5 @@ class TestHBNBCommandPep8(unittest.TestCase):
 
 
 class TestHBNBCommand(unittest.TestCase):
-    """ tests for class HBNBCommand """
+    """tests for class HBNBCommand"""
     pass
