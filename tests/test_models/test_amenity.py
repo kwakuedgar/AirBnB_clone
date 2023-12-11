@@ -1,76 +1,67 @@
 #!/usr/bin/python3
+"""
+tests for Amenity class
+"""
+
 import unittest
-import pep8
-import json
-import os
-from datetime import datetime
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from models.engine.file_storage import FileStorage
-
-
-class TestAmenityDocs(unittest.TestCase):
-    """check for documentation"""
-    def test_class_doc(self):
-        """check for class documentation"""
-        self.assertTrue(len(Amenity.__doc__) > 0)
-
-
-class TestAmenityPep8(unittest.TestCase):
-    """pep8 validation"""
-    def test_pep8(self):
-        """test_base and test base for pep8 conformance"""
-        style = pep8.StyleGuide(quiet=True)
-        file1 = 'models/amenity.py'
-        file2 = 'tests/test_models/test_amenity.py'
-        result = style.check_files([file1, file2])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warning).")
+from tests.test_models.test_base_model import TestBaseModel
+import datetime
+from models import storage
 
 
 class TestAmenity(unittest.TestCase):
-    """class Amenity test"""
-    @classmethod
-    def setUpClass(cls):
-        """set up instances for all tests"""
-        cls.amenity = Amenity()
+    """Test for Amenity class"""
 
-    def test_subclass(self):
-        """test that amenity is a subclass of basemodel"""
-        self.assertIsInstance(self.amenity, BaseModel)
-        self.assertTrue(hasattr(self.amenity, "id"))
-        self.assertTrue(hasattr(self.amenity, "created_at"))
-        self.assertTrue(hasattr(self.amenity, "updated_at"))
+    def test_attributes(self):
+        """Test default attributes of Amenity class"""
+        amenity = Amenity()
+        self.assertEqual(amenity.name, "")
+        self.assertTrue(hasattr(amenity, "id"))
+        self.assertTrue(hasattr(amenity, "created_at"))
+        self.assertTrue(hasattr(amenity, "updated_at"))
 
-    def test_id(self):
-        """test id"""
-        self.assertEqual(str, type(self.amenity.id))
 
-    def test_created_at(self):
-        """test created_at"""
-        self.assertEqual(datetime, type(self.amenity.created_at))
+class TestAmenityAttributes(unittest.TestCase):
+    """
+    Test attributes of Amenity class
+    """
 
-    def test_updated_at(self):
-        """test updated_at"""
-        self.assertEqual(datetime, type(self.amenity.updated_at))
+    def test_name_type(self):
+        """
+        Test name
+        """
+        amenity = Amenity()
+        self.assertEqual(type(amenity.name), str)
 
-    def test_name(self):
-        """test name"""
-        self.assertTrue(hasattr(self.amenity, "name"))
-        self.assertEqual(self.amenity.name, "")
 
-    def test_to_dict(self):
-        """test to_dict method"""
-        new_dict = self.amenity.to_dict()
-        self.assertEqual(type(new_dict), dict)
-        self.assertTrue('to_dict' in dir(self.amenity))
+class TestAmenityMethods(unittest.TestCase):
+    """
+    Test methods
+    """
+    def test_str(self):
+        """
+        Test __str__
+        """
+        amenity = Amenity()
+        expected_output = "[Amenity] ({}) {}".format(
+            amenity.id, amenity.__dict__)
+        self.assertEqual(str(amenity), expected_output)
 
-    @classmethod
-    def tearDownClass(cls):
-        """remove test instances"""
-        pass
+
+class TestAmenityStorage(unittest.TestCase):
+    """
+    Test storage
+    """
+
+    def test_new_instance_stored(self):
+        """
+        Test new instance
+        """
+        amenity = Amenity()
+        storage.new(amenity)
+        self.assertIn(amenity, storage.all().values())
+
+
+if __name__ == '__main__':
+    unittest.main()

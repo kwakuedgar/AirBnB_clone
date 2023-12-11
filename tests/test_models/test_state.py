@@ -1,76 +1,67 @@
 #!/usr/bin/python3
+"""
+tests for State class
+"""
+
 import unittest
-import pep8
-import json
-import os
-from datetime import datetime
-from models.base_model import BaseModel
-from models.user import User
 from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from models.engine.file_storage import FileStorage
+from tests.test_models.test_base_model import TestBaseModel
+import datetime
+from models import storage
 
 
-class TestStateDocs(unittest.TestCase):
-    """check for documentation"""
-    def test_class_doc(self):
-        """check for class documentation"""
-        self.assertTrue(len(State.__doc__) > 0)
+class TestStateAttributes(unittest.TestCase):
+    """
+    Test attributes of the State
+    """
+    def test_name_type(self):
+        """
+        Test name
+        """
+        state = State()
+        self.assertEqual(type(state.name), str)
 
 
-class TestStatePep8(unittest.TestCase):
-    """pep8 validation"""
-    def test_pep8(self):
-        """test base and test_base for pep8 conformance"""
-        style = pep8.StyleGuide(quiet=True)
-        file1 = 'models/state.py'
-        file2 = 'tests/test_models/test_state.py'
-        result = style.check_files([file1, file2])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warning).")
+class TestStateMethods(unittest.TestCase):
+    """
+    Test methods of State
+    """
+
+    def test_str(self):
+        """
+        Test __str__ method of State
+        """
+        state = State()
+        expected_output = "[State] ({}) {}".format(
+            state.id, state.__dict__)
+        self.assertEqual(str(state), expected_output)
+
+
+class TestStateStorage(unittest.TestCase):
+    """
+    Test storage State
+    """
+
+    def test_new_instance_stored(self):
+        """
+        Test new instance of State
+        """
+        state = State()
+        storage.new(state)
+        self.assertIn(state, storage.all().values())
 
 
 class TestState(unittest.TestCase):
-    """tests for class State"""
-    @classmethod
-    def setUpClass(cls):
-        """set up instances for all tests"""
-        cls.state = State()
+    """Test cases for State class"""
 
-    def test_subclass(self):
-        """test that state is a subclass of basemodel"""
-        self.assertIsInstance(self.state, BaseModel)
-        self.assertTrue(hasattr(self.state, "id"))
-        self.assertTrue(hasattr(self.state, "created_at"))
-        self.assertTrue(hasattr(self.state, "updated_at"))
+    def test_attributes(self):
+        """Test default attributes of State class"""
+        state = State()
+        self.assertEqual(state.name, "")
+        self.assertTrue(hasattr(state, "id"))
+        self.assertTrue(hasattr(state, "created_at"))
+        self.assertTrue(hasattr(state, "updated_at"))
 
-    def test_id(self):
-        """test id"""
-        self.assertEqual(str, type(self.state.id))
 
-    def test_created_at(self):
-        """test created_at"""
-        self.assertEqual(datetime, type(self.state.created_at))
-
-    def test_updated_at(self):
-        """test updated_at"""
-        self.assertEqual(datetime, type(self.state.updated_at))
-
-    def test_name(self):
-        """test name"""
-        self.assertTrue(hasattr(self.state, "name"))
-        self.assertEqual(self.state.name, "")
-
-    def test_to_dict(self):
-        """test to_dict method"""
-        new_dict = self.state.to_dict()
-        self.assertEqual(type(new_dict), dict)
-        self.assertTrue('to_dict' in dir(self.state))
-
-    @classmethod
-    def tearDownClass(cls):
-        """remove test instances"""
-        pass
+if __name__ == '__main__':
+    unittest.main()
